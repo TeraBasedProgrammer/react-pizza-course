@@ -7,6 +7,7 @@ import PizzaBlock from '../components/PizzaBlock/Index';
 import Pagination from '../components/Pagination/Index';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { useDebounce } from '../hooks/useDebounce';
 
 interface Pizza {
   id: number;
@@ -27,6 +28,7 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const search = useSelector((state: RootState) => state.search.value);
+  const debouncedSearch = useDebounce(search)
 
   const sortQueryParams = [
     { param: 'rating', order: 'asc' },
@@ -45,7 +47,7 @@ export default function Home() {
           sortBy: sortQueryParams[currentSortId].param,
           order: sortQueryParams[currentSortId].order,
           category: categoryId > 0 ? categoryId : '',
-          title: search,
+          title: debouncedSearch,
           limit: 4,
           page: currentPage,
         },
@@ -72,7 +74,7 @@ export default function Home() {
       });
 
     window.scrollTo(0, 0);
-  }, [currentSortId, categoryId, search, currentPage]);
+  }, [currentSortId, categoryId, debouncedSearch, currentPage]);
 
   return (
     <div className="container">
@@ -91,3 +93,4 @@ export default function Home() {
     </div>
   );
 }
+
