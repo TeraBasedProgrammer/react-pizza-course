@@ -28,7 +28,7 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const search = useSelector((state: RootState) => state.search.value);
-  const debouncedSearch = useDebounce(search)
+  const debouncedSearch = useDebounce(search);
 
   const sortQueryParams = [
     { param: 'rating', order: 'asc' },
@@ -40,7 +40,8 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    setIsLoading(true);
+      setError(null);
+      setIsLoading(true);
     axios
       .get('https://65263e7967cfb1e59ce80c2e.mockapi.io/items', {
         params: {
@@ -53,7 +54,6 @@ export default function Home() {
         },
       })
       .then((res) => {
-        setError(null);
         setItems(res.data);
         setIsLoading(false);
       })
@@ -93,4 +93,3 @@ export default function Home() {
     </div>
   );
 }
-

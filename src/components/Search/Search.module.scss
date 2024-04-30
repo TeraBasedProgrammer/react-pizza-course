@@ -17,11 +17,20 @@
   }
 }
 
-.icon {
+@mixin icon-styles {
   width: 22px;
   height: 22px;
   opacity: 0.3;
   position: absolute;
+  top: 14px;
+}
+
+.icon {
+  @include icon-styles;
   left: 14px;
-  top: 12px;
+}
+
+.crossIcon {
+  @include icon-styles;
+  right: 14px;
 }
