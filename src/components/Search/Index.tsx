@@ -1,15 +1,17 @@
 import styles from './Search.module.scss';
-import { SearchTextContext } from '../../contexts/SearchTextContext';
-import { useContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchText } from '../../redux/slices/searchSlice';
+import { RootState } from '../../redux/store';
 
 export default function Search() {
-  const {searchText, setSearchText} = useContext(SearchTextContext)
+  const search = useSelector((state: RootState) => state.search.value)
+  const dispatch = useDispatch()
 
   return (
     <div className={styles.root}>
       <svg
         className={styles.icon}
-        enable-background="new 0 0 32 32"
+        enableBackground="new 0 0 32 32"
         id="Glyph"
         version="1.1"
         viewBox="0 0 32 32"
@@ -19,7 +21,7 @@ export default function Search() {
           id="XMLID_223_"
         />
       </svg>
-      <input value={searchText} onChange={(e) => setSearchText(e.target.value)} className={styles.input} placeholder="Search" />
+      <input value={search} onChange={(e) => dispatch(setSearchText(e.target.value))} className={styles.input} placeholder="Search" />
     </div>
   );
 }

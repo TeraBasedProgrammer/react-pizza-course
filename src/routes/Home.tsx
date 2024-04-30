@@ -1,11 +1,12 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Categories from '../components/Categories';
 import Sort from '../components/Sort';
 import axios from 'axios';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import PizzaBlock from '../components/PizzaBlock/Index';
 import Pagination from '../components/Pagination/Index';
-import { SearchTextContext } from '../contexts/SearchTextContext';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 interface Pizza {
   id: number;
@@ -25,7 +26,7 @@ export default function Home() {
   const [categoryId, setCategoryId] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [error, setError] = useState<string | null>(null);
-  const { searchText } = useContext(SearchTextContext);
+  const search = useSelector((state: RootState) => state.search.value);
 
   const sortQueryParams = [
     { param: 'rating', order: 'asc' },
@@ -44,9 +45,9 @@ export default function Home() {
           sortBy: sortQueryParams[currentSortId].param,
           order: sortQueryParams[currentSortId].order,
           category: categoryId > 0 ? categoryId : '',
-          title: searchText,
+          title: search,
           limit: 4,
-          page: currentPage
+          page: currentPage,
         },
       })
       .then((res) => {
@@ -67,11 +68,11 @@ export default function Home() {
           setError('An unexpected error occurred, please try again');
         }
         setIsLoading(false);
-        setItems([]); 
+        setItems([]);
       });
 
     window.scrollTo(0, 0);
-  }, [currentSortId, categoryId, searchText, currentPage]);
+  }, [currentSortId, categoryId, search, currentPage]);
 
   return (
     <div className="container">
@@ -86,7 +87,7 @@ export default function Home() {
           ? [...new Array(6)].map((_, i) => <Skeleton key={i} />)
           : items.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />)}
       </div>
-      <Pagination page={currentPage} onChangePage={setCurrentPage}/>
+      <Pagination page={currentPage} onChangePage={setCurrentPage} />
     </div>
   );
 }
