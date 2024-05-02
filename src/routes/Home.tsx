@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { useDebounce } from '../hooks/useDebounce';
 
-interface Pizza {
+export interface Pizza {
   id: number;
   imageUrl: string;
   title: string;
@@ -29,6 +29,7 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const search = useSelector((state: RootState) => state.search.value);
   const debouncedSearch = useDebounce(search);
+  // const navigate = useNavigate();
 
   const sortQueryParams = [
     { param: 'rating', order: 'asc' },
@@ -39,18 +40,34 @@ export default function Home() {
     { param: 'title', order: 'desc' },
   ];
 
+  const queryParams = {
+    sort: sortQueryParams[currentSortId].param,
+    order: sortQueryParams[currentSortId].order,
+    category: categoryId > 0 ? categoryId : '',
+    page: currentPage,
+    limit: 4,
+    search: debouncedSearch,
+  };
+
+  // useEffect(() => {
+  //   if (window.location.search) {
+  //     const params = qs.parse(window.location.search.substring(1));
+  //     setQueryParams(params);
+  //   }
+  // }, []);
+
   useEffect(() => {
-      setError(null);
-      setIsLoading(true);
+    setError(null);
+    setIsLoading(true);
     axios
       .get('https://65263e7967cfb1e59ce80c2e.mockapi.io/items', {
         params: {
-          sortBy: sortQueryParams[currentSortId].param,
-          order: sortQueryParams[currentSortId].order,
-          category: categoryId > 0 ? categoryId : '',
-          title: debouncedSearch,
-          limit: 4,
-          page: currentPage,
+          sortBy: queryParams.sort,
+          order: queryParams.order,
+          category: queryParams.category,
+          title: queryParams.search,
+          limit: queryParams.limit,
+          page: queryParams.page,
         },
       })
       .then((res) => {
@@ -75,6 +92,17 @@ export default function Home() {
 
     window.scrollTo(0, 0);
   }, [currentSortId, categoryId, debouncedSearch, currentPage]);
+
+  // useEffect(() => {
+  //   const queryString = qs.stringify({
+  //     sortParam: queryParams.sort,
+  //     order: queryParams.order,
+  //     categoryId: queryParams.category,
+  //     currentPage: queryParams.page,
+  //   });
+
+  //   // navigate(`?${queryString}`);
+  // }, [currentSortId, categoryId, debouncedSearch, currentPage]);
 
   return (
     <div className="container">

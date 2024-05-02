@@ -1,20 +1,20 @@
-interface CategoriesProps{
-  value: number
-  categoryOnClick: (categoryId: number) => void
+interface CategoriesProps {
+  value: number;
+  categoryOnClick: (categoryId: number) => void;
 }
 
-export default function Categories(props: CategoriesProps) {
+export default function Categories({ value, categoryOnClick }: CategoriesProps) {
   const categories = ['Все', 'Мясные', 'Вегетарианские', 'Гриль', 'Острые', 'Закрытые'];
 
   return (
     <div className="categories">
-        <ul>
+      <ul>
         {categories.map((category, index) => {
           return (
             <li
               key={index}
-              onClick={() => props.categoryOnClick(index)}
-              className={props.value === index ? 'active' : ''}>
+              onClick={() => categoryOnClick(index)}
+              className={value === index ? 'active' : ''}>
               {category}
             </li>
           );

@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface SortProps {
   value: number;
   sortOnClick: (sortType: number) => void;
 }
 
-export default function Sort(props: SortProps) {
+export default function Sort({ value, sortOnClick }: SortProps) {
   const sortChoices = [
     'популярности (asc)',
     'популярности (desc)',
@@ -16,14 +16,26 @@ export default function Sort(props: SortProps) {
   ];
 
   const [modalOpened, setModalOpened] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
 
   const changeSortOption = (sort: number) => {
-    props.sortOnClick(sort);
+    sortOnClick(sort);
     setModalOpened(!modalOpened);
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sortRef.current && !event.composedPath().includes(sortRef.current)) {
+        setModalOpened(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   return (
-    <div className="sort">
+    <div ref={sortRef} className="sort">
       <div className="sort__label">
         <svg
           width="10"
@@ -37,7 +49,7 @@ export default function Sort(props: SortProps) {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setModalOpened(!modalOpened)}>{sortChoices[props.value]}</span>
+        <span onClick={() => setModalOpened(!modalOpened)}>{sortChoices[value]}</span>
       </div>
       {modalOpened && (
         <div className="sort__popup">
@@ -46,7 +58,7 @@ export default function Sort(props: SortProps) {
               <li
                 onClick={() => changeSortOption(index)}
                 key={index}
-                className={index === props.value ? 'active' : ''}>
+                className={index === value ? 'active' : ''}>
                 {choice}
               </li>
             ))}

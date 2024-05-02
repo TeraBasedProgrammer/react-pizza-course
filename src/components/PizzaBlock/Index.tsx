@@ -9,7 +9,7 @@ interface PizzaBlockProps {
   types: Array<number>;
 }
 
-export default function PizzaBlock(props: PizzaBlockProps) {
+export default function PizzaBlock({ title, price, imageUrl, sizes, types }: PizzaBlockProps) {
   const [activeType, setActiveType] = useState(0);
   const [activeSize, setActiveSize] = useState(0);
   const typeNames = ['тонкое', 'традиционное'];
@@ -17,11 +17,11 @@ export default function PizzaBlock(props: PizzaBlockProps) {
   return (
     <div className="pizza-block-parent">
       <div className="pizza-block">
-        <img className="pizza-block__image" src={props.imageUrl} alt="Pizza" />
-        <h4 className="pizza-block__title">{props.title}</h4>
+        <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
+        <h4 className="pizza-block__title">{title}</h4>
         <div className="pizza-block__selector">
           <ul>
-            {props.types.map((typeId) => {
+            {types.map((typeId) => {
               return (
                 <li
                   key={typeId}
@@ -33,7 +33,7 @@ export default function PizzaBlock(props: PizzaBlockProps) {
             })}
           </ul>
           <ul>
-            {props.sizes.map((size, i) => {
+            {sizes.map((size, i) => {
               return (
                 <li
                   key={i}
@@ -46,7 +46,7 @@ export default function PizzaBlock(props: PizzaBlockProps) {
           </ul>
         </div>
         <div className="pizza-block__bottom">
-          <div className="pizza-block__price">от {props.price} ₴</div>
+          <div className="pizza-block__price">от {price} ₴</div>
           <div className="button button--outline button--add">
             <svg
               width="12"
